@@ -81,3 +81,14 @@ def nearest_pairs(d, below=1):
             pairs.append(set((idx1, idx2)))
             dists.append(d[idx1, idx2])
     return pairs, dists
+
+
+def healpix_index(source_id, level=12):
+    """
+    Healpix index of a Gaia object at desired level.
+
+    Note: The approximate ICRS position is encoded using the nested HEALPix
+    scheme at level 12 (Nside=4096), which divides the sky into ≃200 million
+    pixels of about 0.7 arcmin2.
+    """
+    return (source_id / 2**(59-2*level)).astype(int)
