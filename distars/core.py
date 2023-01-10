@@ -51,8 +51,8 @@ def simbad_count_circle(ra, dec, radius, where=None):
     return int(df['COUNT'].iloc[0])
     
 
-def dist_array(p):
-    """
+def dist_array_old(p):
+    """Decrypted... use dist_array instead
     p : position cartesian matrix (NxN)
     d : distance matrix 
     """
@@ -62,9 +62,28 @@ def dist_array(p):
         for j in range(N):
             d[i,j] = np.linalg.norm(np.array(p[i,:]-p[j,:]))
     for i in range(N): # to prevent 0s in diagonal
-        d[i,i] = round(d.max()+1,0)
+        #d[i,i] = round(d.max()+1,0)
+        d[i,i] = 999999.0 # or np.nan
     return d
 
+
+def dist_array(p):
+    """Decrypted... use dist_array instead
+    p : position cartesian matrix (NxN)
+    d : distance matrix 
+    """
+    N = p.shape[0]
+    d = np.zeros((N,N))
+    rows, cols = np.diag_indices_from(d)
+    for i in range(1,N):
+        i_upper = (rows[:-i], cols[i:])
+        d[i_upper] = np.linalg.norm(p[:-i]-p[i:], axis=1)
+    i_lower = np.tril_indices(N, -1)
+    d[i_lower] = d.T[i_lower]
+
+    # temporary
+    d[np.diag_indices_from(d)] = 999999.0 # or np.nan
+    return d
 
 
 def nearest_pairs(d, below=1):
