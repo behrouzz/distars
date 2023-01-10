@@ -13,7 +13,6 @@ FROM gaiadr3.gaia_source
 WHERE {in_radius(ra, dec, r)}
 """
 
-
 df, _ = sql2df(s)
 
 df.columns = [
@@ -22,7 +21,3 @@ df.columns = [
     ]
 
 df.set_index('source_id').to_csv('data/The_Persian_1deg_gaia3.csv')
-
-
-# plx not null: 34045
-# all: 38784

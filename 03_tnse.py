@@ -3,7 +3,7 @@ import pandas as pd
 from hypatie.transform import sph2car
 from sklearn.manifold import TSNE
 import plotly.graph_objects as go
-from distars import plx2car, create_hovertext
+from distars import plx2car
 
 
 df = pd.read_csv('data/The_Persian_1deg_gaia3.csv')

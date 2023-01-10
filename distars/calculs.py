@@ -1,6 +1,5 @@
 import numpy as np
 from hypatie.transform import sph2car
-from hypatie.simbad import sql2df
 
 
 def plx2car(df, col_names=['ra','dec','plx_value']):
@@ -28,49 +27,20 @@ def plx2car(df, col_names=['ra','dec','plx_value']):
     return df
 
 
-def create_hovertext(df):
-    h = '<b>'+df['main_id'].str.replace('"','')+'</b><br>' + \
-        'RA: '+df['ra'].apply(lambda x: round(x,5)).astype(str) + '<br>' \
-        'DEC: '+df['dec'].apply(lambda x: round(x,5)).astype(str) + '<br>'\
-        'Distance: '+df['r'].apply(lambda x: round(x,3)).astype(str)+' <i>(pc)</i><br>' + \
-        'Parallax: '+df['plx_value'].astype(str)+' <i>(mas)</i><br>'
-    return h
 
 
-def in_radius(ra, dec, r):
-    s = "CONTAINS(POINT('ICRS', ra, dec), " + \
-        f"CIRCLE('ICRS', {ra}, {dec}, {r})) = 1"
-    return s
 
-
-def simbad_count_circle(ra, dec, radius, where=None):
-    where = '' if where is None else ' AND '+where
-    s = 'SELECT COUNT(main_id) FROM basic '
-    s = s + f'WHERE {in_radius(ra, dec, radius)}' + where
-    df = sql2df(s)
-    return int(df['COUNT'].iloc[0])
-    
-
-def dist_array_old(p):
-    """Decrypted... use dist_array instead
-    p : position cartesian matrix (NxN)
-    d : distance matrix 
+def distmat(p, diag_zero=True):
     """
-    N = p.shape[0]
-    d = np.zeros((N,N))
-    for i in range(N):
-        for j in range(N):
-            d[i,j] = np.linalg.norm(np.array(p[i,:]-p[j,:]))
-    for i in range(N): # to prevent 0s in diagonal
-        #d[i,i] = round(d.max()+1,0)
-        d[i,i] = 999999.0 # or np.nan
-    return d
+    Distance Matrix
 
+    Arguments
+    ---------
+        p (np.array) : position cartesian matrix (Nx3)
 
-def dist_array(p):
-    """Decrypted... use dist_array instead
-    p : position cartesian matrix (NxN)
-    d : distance matrix 
+    Returns
+    -------
+        d (np.array) : distance matrix (NxN)
     """
     N = p.shape[0]
     d = np.zeros((N,N))
@@ -82,7 +52,8 @@ def dist_array(p):
     d[i_lower] = d.T[i_lower]
 
     # temporary
-    d[np.diag_indices_from(d)] = 999999.0 # or np.nan
+    if not diag_zero:
+        d[np.diag_indices_from(d)] = 999999.0 # or np.nan
     return d
 
 
