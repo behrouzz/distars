@@ -60,7 +60,9 @@ def distmat(p, diag_zero=True):
 def nearest_pairs(d, below=1):
     """
     Get pairs of stars which have distances less than a number (pc)
-    
+
+    Arguments
+    ----------
         d     : distance array
         below : condition; distances less than 'below' will be considered
 
@@ -83,9 +85,9 @@ def nearest_pairs(d, below=1):
     return pairs, dists
 
 
-def healpix_index(source_id, level=12):
+def sourceid_to_ipix(source_id, level=12):
     """
-    Healpix index of a Gaia object at desired level.
+    Healpix index/indices of Gaia object/(s) at desired level.
 
     Note: The approximate ICRS position is encoded using the nested HEALPix
     scheme at level 12 (Nside=4096), which divides the sky into ≃200 million
