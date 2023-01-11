@@ -110,3 +110,19 @@ def sourceid_to_ipix(source_id, level=12):
     pixels of about 0.7 arcmin2.
     """
     return (source_id / 2**(59-2*level)).astype(int)
+
+
+def n_neighbors(d, d_max=1):
+    """
+    Number of neighbors of each star
+
+    Arguments
+    ----------
+        d  (np.array) : distance array (NxN)
+        d_max (float) : maximum distance to be considered as 'neighbor' (pc)
+
+    Returns
+    -------
+        np.array of shape (N,)
+    """
+    return np.array([(d[i]<d_max).sum() for i in range(d.shape[0])])

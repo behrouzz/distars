@@ -3,8 +3,36 @@ from baladin import Aladin
 from distars import gaia_distmat, nearest_pairs
 
 
+def desc(df, ind1, ind2, dist_pair):
+    s1 = ''
+    for k,v in df.iloc[ind1].items():
+        if k == 'source_id':
+            source_id1 = v
+            continue
+        elif isinstance(v, float):
+            value = str(round(v,4))
+        else:
+            value = str(v)
+        s1 = s1 + k + ': ' + value + '<br/>'
+    s2 = ''
+    for k,v in df.iloc[ind2].items():
+        if k == 'source_id':
+            source_id2 = v
+            continue
+        elif isinstance(v, float):
+            value = str(round(v,4))
+        else:
+            value = str(v)
+        s2 = s2 + k + ': ' + value + '<br/>'
+    s1 = s1 + f"<br/><em>Distance to {source_id2}:<em> {round(dist_pair,4)}<br/>"
+    s2 = s2 + f"<br/><em>Distance to {source_id1}:<em> {round(dist_pair,4)}<br/>"
+    return s1, s2
+
+
 df = pd.read_csv('data/The_Persian_1deg_gaia3.csv')
 df = df[df['dist'].notnull()]
+#df = df[df['radvel'].notnull()]
+
 d = gaia_distmat(df, ['ra','dec','dist'])
 pairs, dists = nearest_pairs(d, below=0.5)
 
@@ -18,13 +46,12 @@ for i in range(len(pairs)):
     ra2 = df.iloc[ind2]['ra']
     dec2 = df.iloc[ind2]['dec']
     name2 = df.iloc[ind2]['source_id']
-    dist = round(dists[i], 4)
-    desc1 = f"Distance to {name2}: {dist} pc"
-    desc2 = f"Distance to {name1}: {dist} pc"
+    dist_pair = round(dists[i], 4)
+    desc1, desc2 = desc(df, ind1, ind2, dist_pair)
     tuple1 = (ra1, dec1, name1, desc1)
     tuple2 = (ra2, dec2, name2, desc2)
     ls.append((tuple1, tuple2))
-
+	
 
 markers = [i for sublist in ls for i in sublist]
 
@@ -39,9 +66,3 @@ a.add_survey_buttons(buttons)
 a.add_markers(markers)
 a.create()
 a.save('index.html')
-
-# for example:
-aa = df[df['source_id'].isin([6482282509359112576, 6482282509359111680])]
-print(aa.iloc[0])
-print('-------------------------------------')
-print(aa.iloc[1])
