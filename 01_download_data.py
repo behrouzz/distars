@@ -15,6 +15,8 @@ WHERE {in_radius(ra, dec, r)}
 
 df, _ = sql2df(s)
 
+df.set_index('source_id').to_csv('data/The_Persian_1deg_gaia3_ORIGINAL.csv')
+
 df.columns = [
     'source_id', 'ra', 'dec', 'plx', 'dist', 'pmra', 'pmdec',
     'radvel', 'surf_grav', 'g_mag', 'b_mag', 'r_mag', 'ep_phot'

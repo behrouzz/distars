@@ -57,6 +57,22 @@ def distmat(p, diag_zero=True):
     return d
 
 
+def gaia_distmat(df, coord_cols=['ra', 'dec', 'distance_gspphot']):
+    ra, dec, dist = coord_cols
+    has_ra = ra in df.columns
+    has_dec = dec in df.columns
+    has_dist = dist in df.columns
+    if (has_ra and has_dec and has_dist):
+        if df[dist].isnull().sum()==0:
+            pos_car = sph2car(df[[ra, dec, dist]].values)
+            d = distmat(pos_car, diag_zero=False)
+            return d
+        else:
+            raise Exception('The distance column should not have NULL values')
+    else:
+        raise Exception('ra, dec, distance columns not indicated!')
+
+
 def nearest_pairs(d, below=1):
     """
     Get pairs of stars which have distances less than a number (pc)

@@ -42,3 +42,11 @@ def count(ra, dec, radius, database='gaia', where=None):
             print('Error in retrieving from server! Try here:')
             print('https://simbad.cds.unistra.fr/simbad/sim-tap\n')
             print(s)
+
+def gaia_to_simbad(source_id):
+    # ex: gaia_to_simbad(1870117138241890432)
+    s1 = "SELECT b.main_id FROM ids AS i "
+    s2 = "LEFT JOIN basic AS b ON b.oid=i.oidref "
+    s3 = f"WHERE ids LIKE '%Gaia DR3 {source_id}%'"
+    df = simbad_sql2df(s1+s2+s3)
+    return df

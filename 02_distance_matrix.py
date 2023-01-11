@@ -18,4 +18,3 @@ pairs, dists = nearest_pairs(d, below=0.4)
 for i in range(len(pairs)):
     ind1, ind2 = pairs[i]
     print(list(df.iloc[[ind1,ind2]]['source_id']), ':', dists[i])
-
